@@ -1,17 +1,36 @@
+import { useState, useEffect } from "react";
+
+import Spinner from "./Spinner";
 import Book from "./Book";
 
 const Bookcase = () => {
-  const books = [
-    { id: 1, title: "book1" },
-    { id: 2, title: "book2" },
-    { id: 3, title: "book3" },
-  ];
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const res = await fetch("/api/books");
+        const data = await res.json();
+
+        setBooks(data);
+      } catch (err) {
+        console.log("Error fetching data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, []);
 
   return (
     <div>
-      {books.map((book) => (
-        <Book key={book.id} title={book.title} />
-      ))}
+      {loading ? (
+        <Spinner loading={loading} />
+      ) : (
+        books.map((book) => <Book key={book.id} title={book.title} />)
+      )}
     </div>
   );
 };
