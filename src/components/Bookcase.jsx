@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
-import Spinner from "./Spinner";
-import Book from "./Book";
+import BookCard from "./BookCard";
 
 const Bookcase = () => {
   const [books, setBooks] = useState([]);
@@ -26,11 +25,9 @@ const Bookcase = () => {
 
   return (
     <div>
-      {loading ? (
-        <Spinner loading={loading} />
-      ) : (
-        books.map((book) => <Book key={book.id} title={book.title} />)
-      )}
+      {loading
+        ? "Loading"
+        : books.map((book) => <BookCard key={book.id} title={book.title} />)}
     </div>
   );
 };
