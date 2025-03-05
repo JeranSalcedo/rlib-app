@@ -4,6 +4,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/HomePage";
@@ -20,8 +21,14 @@ const router = createBrowserRouter(
   )
 );
 
+const queryClient = new QueryClient();
+
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 };
 
 export default App;

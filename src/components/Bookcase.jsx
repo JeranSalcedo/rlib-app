@@ -1,34 +1,30 @@
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import BookCard from "./BookCard";
 
 const Bookcase = () => {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: books,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["books"],
+    staleTime: Infinity,
+    queryFn: async () => {
+      const res = await fetch("/api/books");
+      return await res.json();
+    },
+  });
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const res = await fetch("/api/books");
-        const data = await res.json();
-
-        setBooks(data);
-      } catch (err) {
-        console.log("Error fetching data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
+  if (isPending) return "Loading...";
+  if (error) return "An error has occured: " + error.message;
 
   return (
-    <div>
-      {loading
-        ? "Loading"
-        : books.map((book) => <BookCard key={book.id} title={book.title} />)}
-    </div>
+    <ul>
+      {books?.map((book) => (
+        <BookCard key={book.id} title={book.title} />
+      ))}
+    </ul>
   );
 };
 
